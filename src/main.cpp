@@ -1,5 +1,5 @@
 #include <Arduino.h>
-#include <Keyboard.h>
+#include <Mouse.h>
 
 #define RNG_CR_GO_MASK          0x1U
 #define RNG_CR_HA_MASK          0x2U
@@ -47,26 +47,18 @@ void delayRandom(float maxMs)
 
 void loop(void)
 {
-    static const char* keyTable[] =
-    {
-        "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "a", "s", "d", "f", "g", "h",
-        "j", "k", "l", "z", "x", "c", "v", "b", "n", "m", " ", "Q", "W", "E", "R", "T",
-        "Y", "U", "I", "O", "P", "A", "S", "D", "F", "G", "H", "J", "K", "L", "Z", "X",
-        "C", "V", "B", "N", "M", ",", ".", "?", "!", ";", ":", "'", "(", ")", "$", "%"
-    };
+    /* Delay random time up to 500 ms. */
+    delayRandom(500.0f);
 
-    /* Delay random time up to 5000 ms. */
-    delayRandom(5000.0f);
+    float x = getTrueRandNormalized(), y = getTrueRandNormalized();
 
-    /* Randomize key to press from the key table. */
-    uint32_t i = (uint32_t)(getTrueRandNormalized() * ((float)ARRAY_SIZE(keyTable)));
-    if (i >= ARRAY_SIZE(keyTable))
-    {
-        i = ARRAY_SIZE(keyTable) - 1;
-    }
+    x -= 0.5f;
+    y -= 0.5f;
 
-    /* Press random key. */
-    Keyboard.print(keyTable[i]);
+    x *= 5.0f;
+    y *= 5.0f;
+
+    Mouse.move((int8_t)x, (int8_t)y);
 
     /* Blink the LED. */
     digitalWrite(LED_BUILTIN, HIGH);
